@@ -151,24 +151,6 @@ function confMatrix(model , settings , parent){
     			.attr("height" , function(d){return y.rangeBand();})
     			.attr("fill" , function(d){return d.filld;});
 	    	}
-
-	    // var texts = svg.selectAll(".text")
-	    // 			.data(this.newData)
-	    // 			.enter().append("text")
-	    // 			.attr("class" , ".text")
-	    // 			.text(function(d){return d.value;})
-					// .attr("x" , function(d){return x(d.predicted);})
-	    // 			.attr("y" , function(d){ return y(d.actual);})
-	    // 			.attr("transform" , "translate(0,"+y.rangeBand()/2+")")
-	    // 			.attr("fill","#fff")
-				 //    .style("stroke-width", 1)
-				 //    .style("font-size" , "0.7em")
-				 //    .style("z-index" , "999999")
-				 //    .style("text-shadow" ,  "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black")
-				 //    .style("text-anchor", "middle")
-					// .attr("dy", ".35em")
-	    // 			.attr("dx" , "1.6em");
-
 	}
 
 	this.bindEvents = function(){
@@ -229,8 +211,7 @@ function confMatrix(model , settings , parent){
     			.attr("width" , function(d){return x.rangeBand();})
     			.attr("height" , function(d){return y.rangeBand();})
     			.attr("fill" , function(d){return d.filld;});
-	    	}
-	    
+	    	}	    
 	}
 
 	this.overlap = function(nowdata){
@@ -241,13 +222,11 @@ function confMatrix(model , settings , parent){
 		color = d3.scale.linear()
 	    		.domain([min , max])
 	    		.interpolate(d3.interpolateLab)
-	    		// .range(["#d1c4e9" , "#312450"]);
 	    		.range(["#fff" , "#312450"]);
 
 	    colord = d3.scale.linear()
 	    		.domain([mind , maxd])
 	    		.interpolate(d3.interpolateLab)
-	    		// .range(["#d1c4e9" , "#312450"]);
 	    		.range(["#fff" , "#312450"]);
 
 		for(i=0, len= (this.newData).length ; i<len ; i++){
@@ -257,8 +236,6 @@ function confMatrix(model , settings , parent){
 	    		(this.newData)[i].filld = colord((this.newData)[i].value);
 	    }
 		svg = pane.select("svg").select("g");
-
-		// console.log(this.newData);
 
 		overlapcells = svg.selectAll(".overlap-cell")
 	    			.data(this.newData)

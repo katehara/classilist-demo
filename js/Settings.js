@@ -7,6 +7,7 @@ function Settings(){
     this.featurePane = d3.select(".box-plots");
     this.histPane = d3.select(".class-histogram");
     this.probPane = d3.select(".probability-histograms");
+    this.patternPane = d3.select(".pattern");
 
 
 	// state of data switches

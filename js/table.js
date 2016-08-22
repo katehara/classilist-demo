@@ -13,6 +13,20 @@ function Table(model , settings){
 	first = pager.select(".first");
 	last = pager.select(".last");
 
+	var x =  d3.scale.linear()
+	    	.domain([0 , 100])
+	    	.range([0 , 100]);
+
+	xAxis = d3.svg.axis()
+	        .scale(x)
+
+	var y = d3.scale.linear()
+			.domain([0 , 100])
+			.range([100 , 0]);
+
+	yAxis = d3.svg.axis()
+	        .scale(y)
+
 	this.setPager = function(){
 		curr = settings.tableCurrentPage;
 		len = (this.groupedData).length;
@@ -56,7 +70,8 @@ function Table(model , settings){
 		var rows = tbody.selectAll("tr")
 						.data(this.groupedData[settings.tableCurrentPage-1])
 						.enter()
-						.append("tr");
+						.append("tr")
+						.attr("class" , "make-pattern");
 
 		var cells = rows.selectAll("td")
 						.data(function(row){
@@ -69,6 +84,70 @@ function Table(model , settings){
 						.text(function(d){ return d.value; });
 		
 		this.setPager();
+		this.bindEvents();
+	}
+
+	makepattern = function(rowData){
+		patPane = settings.patternPane;
+		patPane.selectAll("*").remove();
+		// console.log(rowData["F-At1"]);		
+
+		svg = patPane.append("svg");
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At1"]))
+		    .attr('y1', y(rowData["F-At2"]))
+		    .attr('x2', x(rowData["F-At3"]))
+		    .attr('y2', y(rowData["F-At4"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At3"]))
+		    .attr('y1', y(rowData["F-At4"]))
+		    .attr('x2', x(rowData["F-At5"]))
+		    .attr('y2', y(rowData["F-At6"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At5"]))
+		    .attr('y1', y(rowData["F-At6"]))
+		    .attr('x2', x(rowData["F-At7"]))
+		    .attr('y2', y(rowData["F-At8"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At7"]))
+		    .attr('y1', y(rowData["F-At8"]))
+		    .attr('x2', x(rowData["F-At9"]))
+		    .attr('y2', y(rowData["F-At10"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At9"]))
+		    .attr('y1', y(rowData["F-At10"]))
+		    .attr('x2', x(rowData["F-At11"]))
+		    .attr('y2', y(rowData["F-At12"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At11"]))
+		    .attr('y1', y(rowData["F-At12"]))
+		    .attr('x2', x(rowData["F-At13"]))
+		    .attr('y2', y(rowData["F-At14"]));
+
+		svg.append('line')
+			.attr("class" , "pattern-stroke")
+		    .attr('x1', x(rowData["F-At13"]))
+		    .attr('y1', y(rowData["F-At14"]))
+		    .attr('x2', x(rowData["F-At15"]))
+		    .attr('y2', y(rowData["F-At16"]));
+
+	}
+
+	this.bindEvents = function(){
+		d3.selectAll(".make-pattern").on("click" , function(){
+			makepattern(d3.select(this).data()[0]);
+		});
 	}
 
 	
@@ -98,9 +177,8 @@ function Table(model , settings){
 		var rows = tbody.selectAll("tr")
 					.data(this.groupedData[curr-1])
 					.enter()
-					.append("tr");
-
-		// rows.exit().remove();
+					.append("tr")
+					.attr("class" , "make-pattern");
 
 		var cells = rows.selectAll("td")
 					.data(function(row){
@@ -113,9 +191,8 @@ function Table(model , settings){
 					.text(function(d){ return d.value; });
 
 		this.setPager();
-	
+		this.bindEvents();
 	}
-
 		
 }
 

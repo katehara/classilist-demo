@@ -27,6 +27,11 @@ nav .brand-logo {
 	font-weight: lighter;
 }
 
+nav .demo-text {
+	font-size: 0.5em;
+	font-weight: bolder;
+}
+
 .row .central-pane.col , .row .left-pane.col , .row .right-pane.col {
 	padding : 0 0.3rem;
 }
@@ -377,10 +382,22 @@ svg .left-bar-tn , svg .bar-tn , svg .overlap-tn , svg .overlap-left-bar-tn{
 }
 
 #data-samples .data-table{
-	height : 90%;
+	height : 65%;
+    height: -webkit-calc(90% - 120px);
+    height: -moz-calc(90% - 120px);
+    height: calc(90% - 120px);
 	overflow-x: auto;
 	overflow-y: auto;
 }
+
+#data-samples .pattern {
+	height: 100px;
+	width: 100px;
+	margin: 10px auto;
+	padding: 0;
+}
+
+
 
 #feature-view , #conf-mat .confusion-matrix {
 	height : 100%;
@@ -429,5 +446,10 @@ a .small-text{
 	font-size : 0.8em;
     fill : #263238;
     font-style : "roboto";
+}
+
+.pattern-stroke {
+	stroke: #ff5252;
+	stroke-width: 2;
 }
 

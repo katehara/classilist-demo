@@ -220,6 +220,5 @@ $(document).ready(function(){
 			settings.matrixDiagonals = this.checked;
 			confmat.applySettings();
 		});
-
 	}
 });
