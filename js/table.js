@@ -92,7 +92,10 @@ function Table(model , settings){
 		patPane.selectAll("*").remove();
 		// console.log(rowData["F-At1"]);		
 
-		svg = patPane.append("svg");
+		svg = patPane.append("svg")
+				.attr("width" , "101px")
+				.attr("height" , "101px");
+
 		svg.append('line')
 			.attr("class" , "pattern-stroke")
 		    .attr('x1', x(rowData["F-At1"]))
