@@ -121,7 +121,7 @@ form p {
 }
 
 .switch label input[type=checkbox]:checked+.lever.tp {
-	background-color: #00b0ff;
+	background-color: #00c853;
 }
 
 .switch label input[type=checkbox]:checked+.lever.fp {
@@ -129,11 +129,11 @@ form p {
 }
 
 .switch label input[type=checkbox]:checked+.lever.fn {
-	background-color: #00c853;
+	background-color: #ff5252;
 }
 
 .switch label input[type=checkbox]:checked+.lever.tn {
-	background-color: #ff5252;
+	background-color: #00b0ff;
 }
 
 .switch label .lever{
@@ -191,21 +191,21 @@ form p {
 }
 
 #filter-high-tp.noUi-connect {
-	background: #00b0ff;
+	background: #00c853;
 }
 
 #filter-high-tp.noUi-connect {
-	border-color: #00b0ff;
+	border-color: #00c853;
 	box-shadow: none;
 }
 
 #filter-low-tn.noUi-background .noUi-base .noUi-connect {
-	background: #ff5252;
+	background: #00b0ff;
 	box-shadow: none;
 }
 
 #filter-low-tn.noUi-target {
-	border-color: #ff5252;
+	border-color: #00b0ff;
 }
 
 .noUi-horizontal .noUi-handle-lower .noUi-tooltip , .noUi-horizontal .noUi-handle-upper .noUi-tooltip{
@@ -286,7 +286,7 @@ form p {
 }
 
 svg .left-bar-tp ,svg .bar-tp , svg .overlap-tp , svg .overlap-left-bar-tp{
-	fill : #00b0ff;
+	fill : #00c853;
 }
 
 svg .left-bar-fp , svg .bar-fp , svg .overlap-fp , svg .overlap-left-bar-fp{
@@ -294,11 +294,11 @@ svg .left-bar-fp , svg .bar-fp , svg .overlap-fp , svg .overlap-left-bar-fp{
 }
 
 svg .left-bar-fn , svg .bar-fn , svg .overlap-fn , svg .overlap-left-bar-fn{
-	fill : #00c853;
+	fill : #ff5252;
 }
 
 svg .left-bar-tn , svg .bar-tn , svg .overlap-tn , svg .overlap-left-bar-tn{
-	fill : #ff5252;
+	fill : #00b0ff;
 }
 
 .d3-tip{
@@ -382,22 +382,10 @@ svg .left-bar-tn , svg .bar-tn , svg .overlap-tn , svg .overlap-left-bar-tn{
 }
 
 #data-samples .data-table{
-	height : 65%;
-    height: -webkit-calc(90% - 120px);
-    height: -moz-calc(90% - 120px);
-    height: calc(90% - 120px);
+	height : 90%;
 	overflow-x: auto;
 	overflow-y: auto;
 }
-
-#data-samples .pattern {
-	height: 100px;
-	width: 100px;
-	margin: 10px auto;
-	padding: 0;
-}
-
-
 
 #feature-view , #conf-mat .confusion-matrix {
 	height : 100%;
@@ -434,7 +422,7 @@ a .small-text{
 }
 
 .box-stroke-light{
-	stroke: #00b0ff;
+	stroke: #00c853;
 }
 
 .box-fill{
@@ -446,10 +434,5 @@ a .small-text{
 	font-size : 0.8em;
     fill : #263238;
     font-style : "roboto";
-}
-
-.pattern-stroke {
-	stroke: #ff5252;
-	stroke-width: 2;
 }
 
