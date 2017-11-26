@@ -77,7 +77,6 @@ $(document).ready(function(){
 	d3.selectAll(".collapsible-body").selectAll(".clear").attr("disabled", "disabled");
 
 	renderVisualizations = function(file){
-
 		 reader.addEventListener("load", parseFile, false);
 		 if (file) {
 			 reader.readAsText(file);
@@ -89,17 +88,29 @@ $(document).ready(function(){
 		initInterface(data);
 	}
 
+	$(".dropdown-button").dropdown();
+
+	d3.selectAll(".dropdown-option").on("click" , function(d){
+		settings.currentFile = d3.select(this).property('id')
+		changeDataset()
+	});
+
+
 	d3.selectAll(".input-file").on("change" , function(){
 		renderVisualizations(this.files[0]);
 	});
 
-	// read data
-	d3.csv("data/img.csv", function (error, data) {
-		if(error){
-			 $('#file-error-modal').openModal();
-		}
-		else initInterface(data);
-	});
+	// read data and init again
+	changeDataset = function(){
+		d3.csv(settings.filesList[settings.currentFile], function (error, data) {
+			if(error){
+				 $('#file-error-modal').openModal();
+			}
+			else initInterface(data);
+		});
+	}
+
+	changeDataset()
 
 	d3.select(".new-data").on("click", function(d){
 		$('#file-upload-modal').openModal();
@@ -113,11 +124,12 @@ $(document).ready(function(){
 
 		tabs = d3.select("ul.tabs")
 
-		
+		tabs.selectAll('*').remove()		
 
 		tabs.append("li")
 	      	.attr("class" , "tab col s4")
 	      		.append("a")
+	      		.attr("class", "active")
 	      		.attr("href" , "#conf-mat")
 	      		.text("Matrix")
 
@@ -150,9 +162,9 @@ $(document).ready(function(){
 		else{
 	    	d3.select("#image-browser").classed("dont-display", true)
 	    }
-	      		
-
+	     
 		$('ul.tabs').tabs();
+		d3.select("#conf-mat").style("display", "initial")
 
 		// initialize data table
 		var table = new Table(model , settings);
