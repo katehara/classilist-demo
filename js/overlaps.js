@@ -1,13 +1,13 @@
-function Overlaps(model, settings, table, box, probs, hist, conf ){
+function Overlaps(model, settings, table, box, probs, hist, conf, img ){
 
 
-	data = model.data;
-	var overlapData , probData, classData, tableData, boxData, confData; 
+  data = model.data;
+  var overlapData , probData, classData, tableData, boxData, confData; 
   var status = 0;
 
   var problow , probhigh , acls , pcls , res ;
 
-	this.prepareData = function(){
+  this.prepareData = function(){
     problow = settings.opl;
     probhigh = settings.oph;
     acls = settings.oca;
@@ -37,60 +37,65 @@ function Overlaps(model, settings, table, box, probs, hist, conf ){
 
 
 
-	}
+  }
 
-	this.overlapProbHist = function(){
+  this.overlapProbHist = function(){
     pane = settings.probPane;
     pane.selectAll(".bar").classed("filled-gray" , true);
     probs.overlap(tableData);
 
-	}
+  }
 
-	this.overlapBoxFeatures = function(){
+  this.overlapBoxFeatures = function(){
     pane = settings.featurePane;
     // pane.selectAll(".feature-group rect").classed("stroked-gray" , true);
     // pane.selectAll(".feature-group line").classed("stroked-gray" , true);
     pane.selectAll(".feature-group-selected").classed("dont-display" , false);
     box.overlap(tableData);
 
-	}
+  }
 
-	this.overlapClassHist = function(){
+  this.overlapClassHist = function(){
     pane = settings.histPane;
     pane.selectAll("rect").classed("filled-gray" , true);
     hist.overlap(tableData);
+  }
 
-
-	}
-
-	this.overlapConfMat = function(){
+  this.overlapConfMat = function(){
     pane = settings.confPane;
     pane.selectAll("rect").classed("filled-gray" , true);
     conf.overlap(tableData);
+  }
 
-	}
-
-	this.overlapTable = function(){
+  this.overlapTable = function(){
     pane = settings.tablePane;
     table.makeTable(tableData);
-	}
+  }
 
-	this.overlapActivate = function(from){
+  this.overlapImages = function(){
+    pane = settings.imgPane;
+    img.makeBrowser(tableData);
+  }
+
+  this.overlapActivate = function(from){
     status = from;
     d3.selectAll(".collapsible-body").selectAll("*").attr("disabled" , "disabled");
     d3.selectAll(".collapsible-body").selectAll(".clear").attr("disabled", null);
     d3.selectAll(".control-matrix").selectAll("*").attr("disabled" , "disabled");
     this.prepareData();
     this.overlapTable();
+    this.overlapImages();
     this.overlapProbHist();
     this.overlapBoxFeatures();
     this.overlapConfMat();
     this.overlapClassHist();
-	}
+  }
 
-	this.overlapDeactivate = function(){
+  this.overlapDeactivate = function(){
     table.makeTable(table.data);
+    img.makeBrowser(table.data);
     d3.selectAll(".collapsible-body").selectAll("*").attr("disabled" , null);
+    d3.selectAll(".collapsible-body").selectAll(".clear").attr("disabled", "disabled");
     d3.selectAll(".control-matrix").selectAll("*").attr("disabled" , null);
     d3.selectAll(".filled-gray").classed("filled-gray" , false);
     d3.selectAll(".stroked-gray").classed("stroked-gray" , false);
@@ -98,7 +103,7 @@ function Overlaps(model, settings, table, box, probs, hist, conf ){
     d3.selectAll(".d3-tip").style("opacity" , "0");
     d3.selectAll(".overlap").remove();
 
-	}
+  }
 }
 
   this.overlapUpdate = function(){

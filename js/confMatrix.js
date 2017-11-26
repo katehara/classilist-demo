@@ -9,7 +9,7 @@ function confMatrix(model , settings , parent){
 	classes = model.classNames;
 	pane = settings.confPane;
 	// w = (pane).node().getBoundingClientRect().width;
-	w = (settings.featurePane).node().getBoundingClientRect().width;
+	w = pane.node().getBoundingClientRect().width;
 	var margin = {
 	    top: 20,
 	    right: 10,
@@ -38,10 +38,10 @@ function confMatrix(model , settings , parent){
 					fill : "#000",
 					filld : "#fff"
 				});
-				if(c < min) min = c;
-				if(c > max) max = c;
-				if(classes[i] != classes[j] && c < mind) mind = c;
-				if(classes[i] != classes[j] && c > maxd) maxd = c;
+				if(classes[i] != classes[j] && c < min) min = c;
+				if(classes[i] != classes[j] && c > max) max = c;
+				if(classes[i] == classes[j] && c < mind) mind = c;
+				if(classes[i] == classes[j] && c > maxd) maxd = c;
 			}
 		}
     }
@@ -71,13 +71,19 @@ function confMatrix(model , settings , parent){
 	    		.domain([mind , maxd])
 	    		.interpolate(d3.interpolateLab)
 	    		// .range(["#d1c4e9" , "#312450"]);
-	    		.range(["#fff" , "#312450"]);
+	    		.range(["#dbecd7" , "#59a954"]);
 
 	    for(i=0, len= (this.matData).length ; i<len ; i++){
-	    	(this.matData)[i].fill = color((this.matData)[i].value);
-
-	    	if((this.matData)[i].actual != (this.matData)[i].predicted) 
-	    		(this.matData)[i].filld = colord((this.matData)[i].value);
+	    	if((this.matData)[i].actual == (this.matData)[i].predicted){
+	    		(this.matData)[i].fill = colord((this.matData)[i].value);
+	    		(this.matData)[i].max = maxd;
+	    		(this.matData)[i].min = mind;
+	    	}
+	    	else{
+	    		(this.matData)[i].fill = color((this.matData)[i].value);
+	    		(this.matData)[i].max = max;
+	    		(this.matData)[i].min = min;
+	    	}
 	    }
 
 
@@ -117,11 +123,15 @@ function confMatrix(model , settings , parent){
 	    			.attr("class" , "cell")
 
 	    if(settings.matrixDiagonals == true && settings.matrixMode == 1){
-	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("width" , function(d){return x.rangeBand()*d.value/max;})
-    			.attr("height" , function(d){return y.rangeBand()*d.value/max;})
-    			.attr("fill" , "#312450");
+	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("width" , function(d){return x.rangeBand()*d.value/d.max;})
+    			.attr("height" , function(d){return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
 	    if(settings.matrixDiagonals == true && settings.matrixMode == 0){
@@ -133,15 +143,19 @@ function confMatrix(model , settings , parent){
 	    	}
 
 	    if(settings.matrixDiagonals == false && settings.matrixMode == 1){
-	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/maxd)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/maxd)))/2;})
+	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
     			.attr("width" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return x.rangeBand()*d.value/maxd;})
+    				else return x.rangeBand()*d.value/d.max;})
     			.attr("height" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return y.rangeBand()*d.value/maxd;})
-    			.attr("fill" , "#312450");
+    				else return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
 	    if(settings.matrixDiagonals == false && settings.matrixMode == 0){
@@ -149,8 +163,30 @@ function confMatrix(model , settings , parent){
     			.attr("y" , function(d){ return y(d.actual);})
     			.attr("width" , function(d){return x.rangeBand();})
     			.attr("height" , function(d){return y.rangeBand();})
-    			.attr("fill" , function(d){return d.filld;});
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#fff'
+    				else return d.fill;
+    				}
+    			);
 	    	}
+
+	    // var texts = svg.selectAll(".text")
+	    // 			.data(this.newData)
+	    // 			.enter().append("text")
+	    // 			.attr("class" , ".text")
+	    // 			.text(function(d){return d.value;})
+					// .attr("x" , function(d){return x(d.predicted);})
+	    // 			.attr("y" , function(d){ return y(d.actual);})
+	    // 			.attr("transform" , "translate(0,"+y.rangeBand()/2+")")
+	    // 			.attr("fill","#fff")
+				 //    .style("stroke-width", 1)
+				 //    .style("font-size" , "0.7em")
+				 //    .style("z-index" , "999999")
+				 //    .style("text-shadow" ,  "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black")
+				 //    .style("text-anchor", "middle")
+					// .attr("dy", ".35em")
+	    // 			.attr("dx" , "1.6em");
+
 	}
 
 	this.bindEvents = function(){
@@ -178,11 +214,15 @@ function confMatrix(model , settings , parent){
 	this.applySettings = function(){
 
 		if(settings.matrixDiagonals == true && settings.matrixMode == 1){
-	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("width" , function(d){return x.rangeBand()*d.value/max;})
-    			.attr("height" , function(d){return y.rangeBand()*d.value/max;})
-    			.attr("fill" , "#312450");
+	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("width" , function(d){return x.rangeBand()*d.value/d.max;})
+    			.attr("height" , function(d){return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
 	    if(settings.matrixDiagonals == true && settings.matrixMode == 0){
@@ -194,15 +234,19 @@ function confMatrix(model , settings , parent){
 	    	}
 
 	    if(settings.matrixDiagonals == false && settings.matrixMode == 1){
-	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/maxd)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/maxd)))/2;})
+	    	cells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
     			.attr("width" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return x.rangeBand()*d.value/maxd;})
+    				else return x.rangeBand()*d.value/d.max;})
     			.attr("height" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return y.rangeBand()*d.value/maxd;})
-    			.attr("fill" , "#312450");
+    				else return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
 	    if(settings.matrixDiagonals == false && settings.matrixMode == 0){
@@ -210,8 +254,13 @@ function confMatrix(model , settings , parent){
     			.attr("y" , function(d){ return y(d.actual);})
     			.attr("width" , function(d){return x.rangeBand();})
     			.attr("height" , function(d){return y.rangeBand();})
-    			.attr("fill" , function(d){return d.filld;});
-	    	}	    
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#fff'
+    				else return d.fill;
+    				}
+    			);
+	    	}
+	    
 	}
 
 	this.overlap = function(nowdata){
@@ -222,20 +271,49 @@ function confMatrix(model , settings , parent){
 		color = d3.scale.linear()
 	    		.domain([min , max])
 	    		.interpolate(d3.interpolateLab)
+	    		// .range(["#d1c4e9" , "#312450"]);
 	    		.range(["#fff" , "#312450"]);
 
 	    colord = d3.scale.linear()
 	    		.domain([mind , maxd])
 	    		.interpolate(d3.interpolateLab)
-	    		.range(["#fff" , "#312450"]);
+	    		.range(["#fff" , "#59a954"]);
+	    		// .range(["#dbecd7" , "#59a954"]);
 
-		for(i=0, len= (this.newData).length ; i<len ; i++){
-	    	(this.newData)[i].fill = color((this.newData)[i].value);
-
-	    	if((this.newData)[i].actual != (this.newData)[i].predicted) 
-	    		(this.newData)[i].filld = colord((this.newData)[i].value);
+	    for(i=0, len= (this.newData).length ; i<len ; i++){
+	    	if((this.newData)[i].actual == (this.newData)[i].predicted){
+	    		(this.newData)[i].fill = colord((this.newData)[i].value);
+	    		(this.newData)[i].max = maxd;
+	    		(this.newData)[i].min = mind;
+	    	}
+	    	else{
+	    		(this.newData)[i].fill = color((this.newData)[i].value);
+	    		(this.newData)[i].max = max;
+	    		(this.newData)[i].min = min;
+	    	}
 	    }
+
+		// color = d3.scale.linear()
+	 //    		.domain([min , max])
+	 //    		.interpolate(d3.interpolateLab)
+	 //    		// .range(["#d1c4e9" , "#312450"]);
+	 //    		.range(["#fff" , "#312450"]);
+
+	 //    colord = d3.scale.linear()
+	 //    		.domain([mind , maxd])
+	 //    		.interpolate(d3.interpolateLab)
+	 //    		// .range(["#d1c4e9" , "#312450"]);
+	 //    		.range(["#fff" , "#312450"]);
+
+		// for(i=0, len= (this.newData).length ; i<len ; i++){
+	 //    	(this.newData)[i].fill = color((this.newData)[i].value);
+
+	 //    	if((this.newData)[i].actual != (this.newData)[i].predicted) 
+	 //    		(this.newData)[i].filld = colord((this.newData)[i].value);
+	 //    }
 		svg = pane.select("svg").select("g");
+
+		// console.log(this.newData);
 
 		overlapcells = svg.selectAll(".overlap-cell")
 	    			.data(this.newData)
@@ -246,11 +324,15 @@ function confMatrix(model , settings , parent){
 	    	
 
 	    if(settings.matrixDiagonals == true && settings.matrixMode == 1){
-	    	overlapcells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/max)))/2;})
-    			.attr("width" , function(d){return x.rangeBand()*d.value/max;})
-    			.attr("height" , function(d){return y.rangeBand()*d.value/max;})
-    			.attr("fill" , "#312450");
+	    	overlapcells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("width" , function(d){return x.rangeBand()*d.value/d.max;})
+    			.attr("height" , function(d){return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
 	    if(settings.matrixDiagonals == true && settings.matrixMode == 0){
@@ -262,24 +344,31 @@ function confMatrix(model , settings , parent){
 	    	}
 
 	    if(settings.matrixDiagonals == false && settings.matrixMode == 1){
-	    	overlapcells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/maxd)))/2;})
-    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/maxd)))/2;})
+	    	overlapcells.attr("x" , function(d){ return x(d.predicted) + (x.rangeBand()*(1-(d.value/d.max)))/2;})
+    			.attr("y" , function(d){ return y(d.actual) + (y.rangeBand()*(1-(d.value/d.max)))/2;})
     			.attr("width" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return x.rangeBand()*d.value/maxd;})
+    				else return x.rangeBand()*d.value/d.max;})
     			.attr("height" , function(d){
     				if(d.predicted == d.actual) return 0;
-    				else return y.rangeBand()*d.value/maxd;})
-    			.attr("fill" , "#312450");
+    				else return y.rangeBand()*d.value/d.max;})
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#59a954'
+    				else return '#312450';
+    				}
+    			);
 	    	}
 
-	    if(settings.matrixDiagonals == false && settings.matrixMode == 0){
+	    if(overlapcells.matrixDiagonals == false && settings.matrixMode == 0){
 	    	overlapcells.attr("x" , function(d){ return x(d.predicted);})
     			.attr("y" , function(d){ return y(d.actual);})
     			.attr("width" , function(d){return x.rangeBand();})
     			.attr("height" , function(d){return y.rangeBand();})
-    			.attr("fill" , function(d){return d.filld;});
+    			.attr("fill" , function(d){
+    				if(d.predicted == d.actual) return '#fff'
+    				else return d.fill;
+    				}
+    			);
 	    	}
-	}
-
+	    }
 }

@@ -74,6 +74,8 @@ $(document).ready(function(){
 	   	}
 	});
 
+	d3.selectAll(".collapsible-body").selectAll(".clear").attr("disabled", "disabled");
+
 	renderVisualizations = function(file){
 
 		 reader.addEventListener("load", parseFile, false);
@@ -92,7 +94,7 @@ $(document).ready(function(){
 	});
 
 	// read data
-	d3.csv("data/out.csv", function (error, data) {
+	d3.csv("data/img.csv", function (error, data) {
 		if(error){
 			 $('#file-error-modal').openModal();
 		}
@@ -109,6 +111,49 @@ $(document).ready(function(){
 		//prepare data model do all basic calculations about data
 		var model = new Model(data);
 
+		tabs = d3.select("ul.tabs")
+
+		
+
+		tabs.append("li")
+	      	.attr("class" , "tab col s4")
+	      		.append("a")
+	      		.attr("href" , "#conf-mat")
+	      		.text("Matrix")
+
+	    if (model.features.length > 0){
+			tabs.append("li")
+		      	.attr("class" , "tab col s4")
+		      		.append("a")
+		      		.attr("href" , "#feature-view")
+		      		.text("Features")
+		    d3.select("#feature-view").classed("dont-display", false)
+	    }
+	    else{
+	    	d3.select("#feature-view").classed("dont-display", true)
+	    }
+
+	    tabs.append("li")
+	      	.attr("class" , "tab col s4")
+	      		.append("a")
+	      		.attr("href" , "#data-samples")
+	      		.text("Samples")
+
+		if (model.images != -1){    
+		    tabs.append("li")
+		      	.attr("class" , "tab col s4")
+		      		.append("a")
+		      		.attr("href" , "#image-browser")
+		      		.text("Images")
+		    d3.select("#image-browser").classed("dont-display", false)
+		}
+		else{
+	    	d3.select("#image-browser").classed("dont-display", true)
+	    }
+	      		
+
+		$('ul.tabs').tabs();
+
 		// initialize data table
 		var table = new Table(model , settings);
 
@@ -124,8 +169,11 @@ $(document).ready(function(){
 		//initialize confusion Matrix
 		var confmat = new confMatrix(model , settings, _self);
 
+		//initialise image browser
+		var img = new imageBrowser(model , settings)
+
 		//initialize selection overlaps
-		this.overlaps = new Overlaps(model , settings, table, boxPlots, probHist, classhist, confmat);
+		this.overlaps = new Overlaps(model , settings, table, boxPlots, probHist, classhist, confmat, img);
 
 		// action listener for TP switch
 		d3.select(".switch-tp").on("change", function(d){
@@ -209,6 +257,26 @@ $(document).ready(function(){
 				table.slideData(2);
 		});
 
+		d3.select(".img-prev").on("click" , function(){
+			if(!d3.select(this).classed("disabled")){
+				img.slideData(0);
+			}
+		});
+
+		d3.select(".img-next").on("click" , function(){
+			if(!d3.select(this).classed("disabled")){
+				img.slideData(1);
+			}
+		});
+
+		d3.select(".img-first").on("click" , function(){
+				img.slideData(-1);
+		});
+
+		d3.select(".img-last").on("click" , function(){
+				img.slideData(2);
+		});
+
 		d3.selectAll(".with-gap").on("change", function(d){
 			mode = d3.select('input[name="mat-mode"]:checked').property("id");
 			if(mode == "size-mode") settings.matrixMode = 1;
@@ -220,5 +288,6 @@ $(document).ready(function(){
 			settings.matrixDiagonals = this.checked;
 			confmat.applySettings();
 		});
+
 	}
 });
