@@ -93,6 +93,11 @@ $(document).ready(function(){
 	d3.selectAll(".dropdown-option").on("click" , function(d){
 		settings.currentFile = d3.select(this).property('id')
 		changeDataset()
+		d3.select(".dropdown-button")
+			.text(d3.select(this).text())
+			.append("i")
+			.attr("class", "material-icons right")
+			.text("arrow_drop_down")
 	});
 
 

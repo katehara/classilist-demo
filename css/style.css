@@ -32,6 +32,10 @@ nav .demo-text {
 	font-weight: bolder;
 }
 
+nav .dropdown-button {
+	min-width: 150px;
+}
+
 .row .central-pane.col , .row .left-pane.col , .row .right-pane.col {
 	padding : 0 0.3rem;
 }
