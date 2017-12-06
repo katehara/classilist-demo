@@ -96,7 +96,7 @@ function ProbHist(model , settings , parent){
       }
       for(j = 0,lenj=data.length; j<lenj ; j++){
         for(k = 0,lenk=preparedData.length; k<lenk ; k++){
-
+          if(data[j][name].toLowerCase() == "tp") console.log(data[j][prob], settings.probtnFilter)
           if(data[j][name].toLowerCase() == "tn" && data[j][prob] < settings.probtnFilter){
             break;
           }
@@ -125,7 +125,6 @@ function ProbHist(model , settings , parent){
   this.makeHistograms = function(){
     pane = settings.probPane;
     pane.selectAll("*").remove();
-
     for(i=0,len=(this.newData).length; i<len ; i++){
       this.histData[i] = this.newData[i];
     }
@@ -153,7 +152,7 @@ function ProbHist(model , settings , parent){
                 .scale(y)
                 .orient("left")
                 .tickValues(y.domain().filter(function(d,i){ 
-                  if(i == 0 || i == (settings.probbins-1) || i == Math.floor((settings.probbins)/2)) return true;
+                  if(i == 0 || i == (settings.probbins-1)) return true;
                   return false;
                 }))
                 .tickSize(0)
@@ -192,7 +191,7 @@ function ProbHist(model , settings , parent){
               .attr("class" , function(d){return d.name+" bar-tp bar";})
               .attr("x" , function(d){return x(0);})
               .attr("y" , function(d){return y(d.probability);})
-              .attr("width" , function(d){return Math.abs(x(d.tp) - x(0));})
+              .attr("width" , function(d){console.log(d.tp, x(d.tp)); return Math.abs(x(d.tp) - x(0));})
               .attr("height" , function(d){return y.rangeBand()});
 
     var fp = svg.selectAll(".bar-fp")
@@ -333,7 +332,7 @@ function ProbHist(model , settings , parent){
                 .scale(y)
                 .orient("left")
                 .tickValues(y.domain().filter(function(d,i){
-                  if(i == 0 || i == (settings.probbins-1) || i == Math.floor((settings.probbins)/2)) return true;
+                  if(i == 0 || i == (settings.probbins-1)) return true;
                   return false;
                 }))
                 .tickSize(0)
