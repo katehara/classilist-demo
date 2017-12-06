@@ -10,6 +10,7 @@ function Settings(){
     this.imgPane = d3.select(".browser");
     this.imgPagerPane = d3.select(".img-pager");
     this.tabbedPane = d3.select(".tabbed-view");
+    this.patternPane = d3.select(".pattern")
 
     //
     this.filesList = ['data/prob_1nn.csv', 'data/prob_2nn.csv',
